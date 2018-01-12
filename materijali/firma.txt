@@ -1,0 +1,181 @@
+<?php
+
+abstract class Osoba {
+	
+	protected $ime;
+	protected $prezime;
+	
+	public function __construct($ime, $prezime) {
+		$this->ime = $ime;
+		$this->prezime = $prezime;
+	}
+	
+	public function getIme() {
+		return $this->ime;
+	}
+
+	public function getPrezime() {
+		return $this->prezime;
+	}
+
+	public function setIme($ime) {
+		$this->ime = $ime;
+		return $this;
+	}
+
+	public function setPrezime($prezime) {
+		$this->prezime = $prezime;
+		return $this;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function predstaviSe() {
+		
+		return 'Ja sam ' . $this->ime . ' ' . $this->prezime . '.';
+	}
+}
+
+// extends - nasledjivanje
+class Zaposleni extends Osoba {
+	
+	protected $odeljenje;
+	
+	public function __construct($ime, $prezime, $odeljenje) {
+		parent::__construct($ime, $prezime);
+		$this->odeljenje = $odeljenje;
+	}
+
+	
+	public function getOdeljenje() {
+		return $this->odeljenje;
+	}
+
+	public function setOdeljenje($odeljenje) {
+		$this->odeljenje = $odeljenje;
+		return $this;
+	}
+	
+	public function predstaviSe() {
+		
+		return parent::predstaviSe() . ' Zaposlen sam u odeljenju: ' . $this->odeljenje . '.'; 
+	}
+}
+
+class Polaznik extends Osoba {
+	protected $kurs;
+	
+	public function __construct($ime, $prezime, $kurs) {
+		parent::__construct($ime, $prezime);
+		
+		$this->kurs = $kurs;
+	}
+	
+	public function getKurs() {
+		return $this->kurs;
+	}
+
+	public function setKurs($kurs) {
+		$this->kurs = $kurs;
+		return $this;
+	}
+
+	public function predstaviSe() {
+		return parent::predstaviSe() . ' Pohadjam kurs: ' . $this->kurs . '.'; 
+	}
+
+
+}
+
+class Praktikant extends Zaposleni {
+	
+	protected $mentor;
+	
+	public function __construct($ime, $prezime, $odeljenje, $mentor) {
+		parent::__construct($ime, $prezime, $odeljenje);
+		
+		$this->mentor = $mentor;
+	}
+
+	public function predstaviSe() {
+		return parent::predstaviSe() . ' Moj mentor je: ' . $this->mentor . '.';
+	}
+
+}
+
+class Firma {
+	
+	/**
+	 * @var Osoba[] 
+	 */
+	protected $osobe = [];
+	
+	public function getOsobe() {
+		return $this->osobe;
+	}
+
+	public function setOsobe(array $osobe) {
+		
+		foreach ($osobe as $osoba) {
+			if (!($osoba instanceof Osoba)) {
+				die('Clanovi niza osobe moraju biti instance klase Osoba');
+			}
+		}
+		
+		$this->osobe = $osobe;
+		return $this;
+	}
+	
+	public function addOsoba(Osoba $osoba) {
+		
+		$this->osobe[] = $osoba;
+		
+		return $this;
+	}
+	
+	public function izlistajOsobe() {
+		echo "Osobe u firmi: <br><br>";
+		
+		foreach ($this->osobe as $osoba) {
+			echo $osoba->predstaviSe() . "<br>";
+		}
+	}
+
+}
+
+//$osobe = [];
+//
+//$osobe[] = new Osoba('O1 Ime', 'O1 Prezime');
+//
+//$osobe[] = new Zaposleni('Z1 Ime', 'Z1 Prezime', 'Z1 Odeljenje');
+//$osobe[] = new Zaposleni('Z2 Ime', 'Z2 Prezime', 'Z2 Odeljenje');
+//$osobe[] = new Zaposleni('Z3 Ime', 'Z3 Prezime', 'Z3 Odeljenje');
+//
+//$osobe[] = new Polaznik('P1 Ime', 'P1 Prezime', 'P1 Kurs');
+//$osobe[] = new Polaznik('P2 Ime', 'P2 Prezime', 'P2 Kurs');
+//$osobe[] = new Polaznik('P3 Ime', 'P3 Prezime', 'P3 Kurs');
+//
+//foreach ($osobe as $osoba) {
+//	
+//	echo $osoba->predstaviSe() . "<br>";
+//	
+//}
+
+$firma = new Firma();
+
+$firma->addOsoba(new Zaposleni('Z1 Ime', 'Z1 Prezime', 'Z1 Odeljenje'));
+$firma->addOsoba(new Zaposleni('Z2 Ime', 'Z2 Prezime', 'Z2 Odeljenje'));
+$firma->addOsoba(new Zaposleni('Z3 Ime', 'Z3 Prezime', 'Z3 Odeljenje'));
+
+$firma->addOsoba(new Polaznik('P1 Ime', 'P1 Prezime', 'P1 Kurs'));
+$firma->addOsoba(new Polaznik('P2 Ime', 'P2 Prezime', 'P2 Kurs'));
+$firma->addOsoba(new Polaznik('P3 Ime', 'P3 Prezime', 'P3 Kurs'));
+
+$firma->addOsoba(new Praktikant('Pr1 Ime', 'Pr1 Prezime', 'Pr1 Odeljenje', 'Pr1 Mentor'));
+$firma->addOsoba(new Praktikant('Pr2 Ime', 'Pr2 Prezime', 'Pr2 Odeljenje', 'Pr2 Mentor'));
+
+
+//print_r($firma);
+
+$firma->izlistajOsobe();
